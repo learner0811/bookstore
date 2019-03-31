@@ -16,14 +16,14 @@ import ptit.bookstore.model.Address;
 import ptit.bookstore.model.Author;
 import ptit.bookstore.model.Book;
 import ptit.bookstore.model.Category;
-import ptit.bookstore.service.SearchBookByNameService;
+import ptit.bookstore.service.BookService;
 
 
 
 @RestController
 public class BookApiCtr {
 	@Autowired
-	private SearchBookByNameService searchBookByNameService;
+	private BookService bookService;
 	
 	/*Get All books*/	
 	@RequestMapping("/getAllBook")
@@ -54,9 +54,16 @@ public class BookApiCtr {
 	@RequestMapping(value = "/searchBookByName", method = RequestMethod.GET)
 	public ResponseEntity<List<Book>> getBookByName(@RequestParam String bookName)
 	{
-		List<Book> result = searchBookByNameService.searchBookByName(bookName);
+		List<Book> result = bookService.searchBookByName(bookName);
 		return new ResponseEntity<List<Book>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
 		
+	}
+	
+	@RequestMapping(value = "/getBookById", method = RequestMethod.GET)
+	public ResponseEntity<Book> getBookById(@RequestParam int id)
+	{
+		Book result = bookService.getBookById(id);
+		return new ResponseEntity<Book>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
 	}
 	
 }
