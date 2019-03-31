@@ -107,7 +107,6 @@ public class CategoryDao {
 	
 	public Category update(final Category category) {
 		jdbctemplate.update(new PreparedStatementCreator() {			
-			
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				String sql = "update category set name = ? where id = ?";
 				PreparedStatement ps = connection.prepareStatement(sql);
