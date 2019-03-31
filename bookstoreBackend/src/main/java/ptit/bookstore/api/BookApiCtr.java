@@ -4,21 +4,26 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ptit.bookstore.model.Address;
 import ptit.bookstore.model.Author;
 import ptit.bookstore.model.Book;
 import ptit.bookstore.model.Category;
+import ptit.bookstore.service.SearchBookByNameService;
 
 
 
 @RestController
 public class BookApiCtr {
-	
+	@Autowired
+	private SearchBookByNameService searchBookByNameService;
 	
 	/*Get All books*/	
 	@RequestMapping("/getAllBook")
@@ -44,6 +49,14 @@ public class BookApiCtr {
 		cat.setName("kinh di");
 		listBook.add(b1);
 		return new ResponseEntity<List<Book>>(listBook, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/searchBookByName", method = RequestMethod.GET)
+	public ResponseEntity<List<Book>> getBookByName(@RequestParam String bookName)
+	{
+		List<Book> result = searchBookByNameService.searchBookByName(bookName);
+		return new ResponseEntity<List<Book>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
+		
 	}
 	
 }
