@@ -141,6 +141,33 @@ public class BookDao {
 		
 	}
 	
+	public List<Book> getBookByCategory(int categoryId)
+	{
+		List<Book> result = new ArrayList<Book>();
+		try {
+			String sql = "select * from book "
+					+ "left join book_category on book.id = book_category.idbook "
+					+ "left join category on book_category.idcat = category.id "
+					+ "where category.id = ?";
+			PreparedStatement ps = dataSource.getConnection().prepareStatement(sql);
+			ps.setInt(1, categoryId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				int id = rs.getInt("book.id");
+				Book b = this.getBookById(id);
+				result.add(b);
+			}
+			return result;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
 	private Book isBookInList(int id, List<Book> listBook)
 	{
 		for(Book b : listBook)

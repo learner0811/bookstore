@@ -25,4 +25,10 @@ public class BookService {
 		Book result = bookDao.getBookById(id);
 		return result;
 	}
+	
+	public List<Book> searchBookByCategory(int categoryId)
+	{
+		List<Book> result = bookDao.getBookByCategory(categoryId);
+		return result;
+	}
 }
