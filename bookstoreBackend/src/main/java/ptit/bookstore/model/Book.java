@@ -1,15 +1,34 @@
 package ptit.bookstore.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
 public class Book {
 	private Author author;
 	private Publisher publisher;
-	private Category category;
+	private List<Category> category;
 	private int id;
 	private String description;
 	private int price;
 	private int discount;
 	private String status;
 	private String imgUrl;
+	private String name;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Book()
+	{
+		category = new ArrayList<Category>();
+	}
 	
 	public Author getAuthor() {
 		return author;
@@ -23,11 +42,14 @@ public class Book {
 	public void setPublisher(Publisher publisher) {
 		this.publisher = publisher;
 	}
-	public Category getCategory() {
+	public List<Category> getCategory() {
 		return category;
 	}
-	public void setCategory(Category category) {
+	public void setCategory(List<Category> category) {
 		this.category = category;
+	}
+	public void addCategory(Category category){
+		this.category.add(category);
 	}
 	public int getId() {
 		return id;
