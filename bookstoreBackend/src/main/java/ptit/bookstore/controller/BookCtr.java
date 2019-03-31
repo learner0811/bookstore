@@ -14,4 +14,12 @@ public class BookCtr {
 
 		return mav;
 	}
+	
+	@RequestMapping("/book/add")
+	public ModelAndView add() {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/book/add");
+
+		return mav;
+	}
 }

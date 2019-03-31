@@ -21,59 +21,60 @@
 			<%@include file="../common/breadcum.jsp"%>
 
 			<!-- main content -->
+			<div class="container">
+				<button class="btn btn-success" style="margin-bottom: 10px"
+					id="btnAdd">Addd</button>
 
-			<button class="btn btn-success">Addd</button>
-
-			<table class="table table-bordered table-striped table-hove">
-				<tr>
-					<th>a</th>
-					<th>b</th>
-					<th>c</th>
-					<th>d</th>
-					<th>Action</th>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>
-						<button class="btn btn-primary">Edit</button>
-						<button class="btn btn-danger">Xoa</button>
-					</td>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td>2</td>
-					<td>2</td>
-					<td>2</td>
-					<td>
-						<button class="btn btn-primary">Edit</button>
-						<button class="btn btn-danger">Xoa</button>
-					</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>
-						<button class="btn btn-primary">Edit</button>
-						<button class="btn btn-danger">Xoa</button>
-					</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>
-						<button class="btn btn-primary">Edit</button>
-						<button class="btn btn-danger">Xoa</button>
-					</td>
-				</tr>
-			</table>
-
+				<table class="table table-bordered table-striped table-hove">
+					<tr>
+						<th>a</th>
+						<th>b</th>
+						<th>c</th>
+						<th>d</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>
+							<button class="btn btn-primary">Edit</button>
+							<button class="btn btn-danger">Xoa</button>
+						</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>2</td>
+						<td>2</td>
+						<td>2</td>
+						<td>
+							<button class="btn btn-primary">Edit</button>
+							<button class="btn btn-danger">Xoa</button>
+						</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>
+							<button class="btn btn-primary">Edit</button>
+							<button class="btn btn-danger">Xoa</button>
+						</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>
+							<button class="btn btn-primary">Edit</button>
+							<button class="btn btn-danger">Xoa</button>
+						</td>
+					</tr>
+				</table>
+			</div>
 
 			<!-- Pagination -->
 			<%@include file="../common/pagination.jsp"%>
@@ -81,6 +82,12 @@
 
 		<!-- MAIN SCRIPT -->
 		<%@include file="../common/lib.jsp"%>
+
+		<script type="text/javascript">
+			$("#btnAdd").click(function() {
+				window.open('/bookstore/book/add', '_self');
+			});
+		</script>
 	</div>
 </body>
 </html>
