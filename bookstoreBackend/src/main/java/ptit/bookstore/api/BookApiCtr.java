@@ -73,4 +73,12 @@ public class BookApiCtr {
 		return new ResponseEntity<List<Book>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping(value = "/getUserRating", method = RequestMethod.GET)
+	public ResponseEntity<Double> getUserRating(@RequestParam int bookId, @RequestParam int userId)
+	{
+		Double result = bookService.getUserRating(bookId, userId);
+		return new ResponseEntity<Double>(result, result == -1 ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
+		
+	}
 }
