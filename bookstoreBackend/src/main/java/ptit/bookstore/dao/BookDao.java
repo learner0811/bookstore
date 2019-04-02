@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,16 +13,17 @@ import ptit.bookstore.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
-
 
 @Repository
 public class BookDao {
-	@Autowired 
+	@Autowired
 	private DataSource dataSource;
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
@@ -34,8 +36,7 @@ public class BookDao {
 				+ "left join author on book.authorId = author.id "
 				+ "left join publisher on book.publisherId = publisher.id "
 				+ "left join book_category on book.id = book_category.idbook "
-				+ "left join category on book_category.idcat = category.id "
-				+ "where book.id = ?";
+				+ "left join category on book_category.idcat = category.id " + "where book.id = ?";
 		PreparedStatement ps;
 		try {
 			conn = dataSource.getConnection();
@@ -69,6 +70,7 @@ public class BookDao {
 					category.setId(rs.getInt("category.id"));
 					category.setName(rs.getString("category.name"));
 					b.addCategory(category);
+
 					ps = conn.prepareStatement(sql);
 					ps.setInt(1, id);
 					double rating = 0;
@@ -107,15 +109,13 @@ public class BookDao {
 			return null;
 		}
 	}
-	
-	public List<Book> getBookByName(String bookName)
-	{
+
+	public List<Book> getBookByName(String bookName) {
 		bookName = bookName.toLowerCase();
 		bookName = "%" + bookName + "%";
 		List<Book> result = new ArrayList<Book>();
 		try {
-			String sql = "select * from book "
-					+ "left join author on book.authorId = author.id "
+			String sql = "select * from book " + "left join author on book.authorId = author.id "
 					+ "left join publisher on book.publisherId = publisher.id "
 					+ "left join book_category on book.id = book_category.idbook "
 					+ "left join category on book_category.idcat = category.id "
@@ -124,8 +124,7 @@ public class BookDao {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, bookName);
 			ResultSet rs = ps.executeQuery();
-			while(rs.next())
-			{
+			while (rs.next()) {
 				int id = rs.getInt("book.id");
 				Book b = isBookInList(id, result);
 				if(b == null)
@@ -169,9 +168,7 @@ public class BookDao {
 						rating /= count;
 					b.setAverageRating(rating);
 					result.add(b);
-				}
-				else
-				{
+				} else {
 					Category category = new Category();
 					category.setId(rs.getInt("category.id"));
 					category.setName(rs.getString("category.name"));
@@ -269,27 +266,64 @@ public class BookDao {
 				return b;
 		return null;
 	}
-	
-//	private class BookRowMapper implements RowMapper<Book>
-//	{
-//
-//		public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-//			Book b = new Book();
-//			b.setId(rs.getInt("book.id"));
-//			Author author = new Author();
-//			author.setId(rs.getInt("book.authorId"));
-//			author.setDob(rs.getDate("author.dob"));
-//			author.setName(rs.getString("author.name"));
-//			b.setAuthor(author);
-//			Publisher publisher = new Publisher();
-//			publisher.setId(rs.getInt("book.publisherId"));
-//			publisher.setName(rs.getString("publisher.name"));
-//			b.setPrice(rs.getInt("book.price"));
-//			b.setDiscount(rs.getInt("book.discount"));
-//			b.setStatus(rs.getString("book.status"));
-//			b.setImgUrl(rs.getString("book.imgUrl"));
-//			b.setDescription(rs.getString("book.description"));
-//			return b;
-//		}
-//	}
+
+	// private class BookRowMapper implements RowMapper<Book>
+	// {
+	//
+	// public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
+	// Book b = new Book();
+	// b.setId(rs.getInt("book.id"));
+	// Author author = new Author();
+	// author.setId(rs.getInt("book.authorId"));
+	// author.setDob(rs.getDate("author.dob"));
+	// author.setName(rs.getString("author.name"));
+	// b.setAuthor(author);
+	// Publisher publisher = new Publisher();
+	// publisher.setId(rs.getInt("book.publisherId"));
+	// publisher.setName(rs.getString("publisher.name"));
+	// b.setPrice(rs.getInt("book.price"));
+	// b.setDiscount(rs.getInt("book.discount"));
+	// b.setStatus(rs.getString("book.status"));
+	// b.setImgUrl(rs.getString("book.imgUrl"));
+	// b.setDescription(rs.getString("book.description"));
+	// return b;
+	// }
+	// }
+
+	public Book save(final Book book) {
+		KeyHolder holder = new GeneratedKeyHolder();
+		jdbcTemplate.update(new PreparedStatementCreator() {
+
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				String sql = "insert into book (authorId, publisherId, price, status, imgUrl, name, discount) values (?,?,?,?,?,?,?)";
+				PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+				if (book.getAuthor().getId() == 0)
+					ps.setNull(1, Types.INTEGER);
+				else					
+					ps.setInt(1, book.getAuthor().getId());
+				if (book.getPublisher().getId() == 0)
+					ps.setNull(2, Types.INTEGER);
+				else
+					ps.setInt(2, book.getPublisher().getId());
+				ps.setInt(3, book.getPrice());
+				ps.setString(4, book.getStatus());
+				ps.setString(5, book.getImgUrl());
+				ps.setString(6, book.getName());
+				ps.setInt(7, book.getDiscount());
+				return ps;
+			}
+		}, holder);
+		book.setId(holder.getKey().intValue());
+		return book;
+	}
+
+	public void addBookCategory(final Book book) {
+		final List<Category> listCat = book.getCategory();
+		int rowAffect = 0;
+		for (int i = 0; i < listCat.size(); i++) {
+			rowAffect += jdbcTemplate.update("insert into book_category values (?, ?)", book.getId(), listCat.get(i).getId());			
+		}
+				
+		System.out.println("number of row affect in book dao function addBookCategory " + rowAffect);
+	}
 }

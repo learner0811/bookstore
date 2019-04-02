@@ -1,10 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Book management</title>
 <!-- MAIN CSS -->
 <%@include file="../common/style.jsp"%>
@@ -20,9 +20,10 @@ label {
 	margin-bottom: 0;
 	margin-left: 1px;
 }
-.chosen-container{
+
+.chosen-container {
 	width: 100% !important;
-} 
+}
 </style>
 </head>
 <body>
@@ -40,63 +41,60 @@ label {
 			<!-- main content -->
 
 			<div class="container">
-				<c:if test="${not empty errorMsg}">
-					<div class="alert alert-danger alert-dismissible">
-						<button type="button" class="close" data-dismiss="alert">&times;</button>
-						<c:out value="${errorMsg}"></c:out>
-					</div>
-				</c:if>
-
-				<form>
+				<%@include file="../common/msg.jsp" %>
+				<form:form enctype="multipart/form-data" method="post"
+					action="/bookstore/book/add" modelAttribute="book">
 					<div class="row">
 						<div class="form-group col-md-6">
 							<label>Name</label> <input type="text" class="form-control"
 								name="name">
 						</div>
 						<div class="form-group col-md-6">
-							<label style="display: block">Category</label> 
-							<select data-placeholder="Select category" multiple
-								class="chosen-select" tabindex="8">
-								<option value=""></option>
-								<option>American Black Bear</option>
-								<option>Asiatic Black Bear</option>
-								<option>Brown Bear</option>
-								<option>Giant Panda</option>
-								<option>Sloth Bear</option>
-								<option disabled>Sun Bear</option>
-								<option selected>Polar Bear</option>
-								<option disabled>Spectacled Bear</option>
+							<label style="display: block">Category</label> <select
+								data-placeholder="Select category" multiple
+								class="chosen-select" tabindex="8" name="catList" required="required">
+								<c:forEach items="${listCategory}" var="i">
+									<option value=${i.id }>${i.name}</option>
+								</c:forEach>
 							</select>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="form-group col-md-6">
-							<label>Author</label> <select class="form-control">
+							<label>Author</label> <select class="form-control"
+								name="author.id">
 								<option value="0">None</option>
+								<c:forEach items="${listAuthor}" var="i">
+									<option value=${i.id }>${i.name}</option>
+								</c:forEach>
 							</select>
 						</div>
 						<div class="form-group col-md-6">
-							<label>Publisher</label> <select class="form-control">
+							<label>Publisher</label> <select class="form-control"
+								name="publisher.id">
 								<option value="0">None</option>
+								<c:forEach items="${listPublisher}" var="i">
+									<option value="${i.id}">${i.name}</option>
+								</c:forEach>
 							</select>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-6">
 							<label>Price</label> <input type="text" class="form-control"
-								name="name">
+								name="price">
 						</div>
 						<div class="form-group col-md-6">
 							<label>Discount</label> <input type="text" class="form-control"
-								name="name">
+								name="discount">
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-6">
-							<label>Status</label> <select class="form-control">
-								<option value="0">Sold</option>
+							<label>Status</label> <select class="form-control" name="status">
 								<option value="1">Available</option>
+								<option value="0">Sold</option>
 							</select>
 						</div>
 					</div>
@@ -104,10 +102,18 @@ label {
 						<div class="form-group col-md-6">
 							<label>Image</label>
 							<div class="custom-file">
-								<input type="file" class="custom-file-input" id="customFile">
-								<label class="custom-file-label" for="customFile">Choose
-									file</label>
+								<input type="file" class="custom-file-input" id="customFile"
+									accept="image/x-png,image/gif,image/jpeg" name="imageFile"
+									required="required"> <label class="custom-file-label"
+									for="customFile">Choose file</label>
 							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-12">
+							<label for="comment">Description:</label>
+							<textarea class="form-control" rows="5" id="comment"
+								name="description"></textarea>
 						</div>
 					</div>
 					<div class="row">
@@ -115,7 +121,7 @@ label {
 							<button type="submit" class="btn btn-info">Submit</button>
 						</div>
 					</div>
-				</form>
+				</form:form>
 
 
 			</div>

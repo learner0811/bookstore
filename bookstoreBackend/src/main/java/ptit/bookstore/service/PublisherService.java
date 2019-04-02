@@ -13,6 +13,10 @@ public class PublisherService {
 	@Autowired
 	private PublisherDao publisherDao;
 	
+	public List<Publisher> findAll(){
+		return publisherDao.findAll();
+	}
+	
 	public List<Publisher> getAllPublisher()
 	{
 		List<Publisher> result = publisherDao.getAllPublisher();

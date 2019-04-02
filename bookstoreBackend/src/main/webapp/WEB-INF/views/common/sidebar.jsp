@@ -1,9 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
 <div class="bg-light border-right" id="sidebar-wrapper">
 	<div class="sidebar-heading">Start Bootstrap</div>
 	<div class="list-group list-group-flush">
-		<a href="#" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+		<a href="/bookstore/category/index" class="list-group-item list-group-item-action bg-light">Dashboard</a>
 		<a href="/bookstore/category/index" class="list-group-item list-group-item-action bg-light">Category</a>
 		<a href="/bookstore/book/index" class="list-group-item list-group-item-action bg-light">Books</a>
 		<a href="/bookstore/account/index" class="list-group-item list-group-item-action bg-light">Account</a>
