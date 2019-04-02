@@ -22,6 +22,9 @@
 
 			<!-- main content -->
 			<div class="container">
+			
+				<%@include file="../common/msg.jsp" %>
+				
 				<button class="btn btn-success" style="margin-bottom: 10px"
 					id="btnAdd">Addd</button>
 

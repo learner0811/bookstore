@@ -1,5 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
 	<button class="btn btn-primary" id="menu-toggle">toggle</button>
 	  
