@@ -26,29 +26,11 @@ public class BookApiCtr {
 	private BookService bookService;
 	
 	/*Get All books*/	
-	@RequestMapping("/getAllBook")
+	@RequestMapping(value = "/getAllBook", method = RequestMethod.GET)
 	public ResponseEntity<List<Book>> getAllBook(){
-		List<Book> listBook = new ArrayList<Book>();
-		Book b1 = new Book();
-		b1.setId(1);
-		b1.setPrice(12);
-		b1.setStatus("sold");
-		b1.setDescription("this book is ...");
-		Author a = new Author();
-		a.setId(1);
-		a.setName("Chau viet cuong");
-		a.setDob(new Date());
-		Address address = new Address();
-		address.setNumber("150 pho duc chinh");
-		address.setDistrict("Ha Noi");
-		address.setCountry("Viet Nam");
-		a.setAddress(address);
-		b1.setAuthor(a);
-		Category cat = new Category();
-		cat.setId(1);
-		cat.setName("kinh di");
-		listBook.add(b1);
-		return new ResponseEntity<List<Book>>(listBook, HttpStatus.OK);
+		List<Book> result = bookService.getAllBook();
+		return new ResponseEntity<List<Book>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
+		
 	}
 	
 	@RequestMapping(value = "/searchBookByName", method = RequestMethod.GET)
