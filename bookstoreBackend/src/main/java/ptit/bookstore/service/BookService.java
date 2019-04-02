@@ -20,6 +20,12 @@ public class BookService {
 		
 	}
 	
+	public List<Book> getAllBook()
+	{
+		List<Book> result = bookDao.getAllBook();
+		return result;
+	}
+	
 	public Book getBookById(int id)
 	{
 		Book result = bookDao.getBookById(id);
