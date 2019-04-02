@@ -11,10 +11,21 @@ import ptit.bookstore.model.Publisher;
 @Service
 public class PublisherService {
 	@Autowired
-	public PublisherDao pulisherDao;
+	private PublisherDao publisherDao;
 	
 	public List<Publisher> findAll(){
-		return pulisherDao.findAll();
+		return publisherDao.findAll();
 	}
 	
+	public List<Publisher> getAllPublisher()
+	{
+		List<Publisher> result = publisherDao.getAllPublisher();
+		return result;
+	}
+	
+	public Publisher getPublisherById(int id)
+	{
+		Publisher result = publisherDao.getPublisherById(id);
+		return result;
+	}
 }

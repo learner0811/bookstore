@@ -32,5 +32,17 @@ public class BookService {
 		book = bookDao.save(book);
 		bookDao.addBookCategory(book);
 		return book;
+  }
+  
+	public List<Book> searchBookByCategory(int categoryId)
+	{
+		List<Book> result = bookDao.getBookByCategory(categoryId);
+		return result;
+	}
+	
+	public double getUserRating(int bookId, int userId)
+	{
+		double result = bookDao.getUserRating(bookId, userId);
+		return result;
 	}
 }

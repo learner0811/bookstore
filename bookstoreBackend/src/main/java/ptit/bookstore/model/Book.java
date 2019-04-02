@@ -16,7 +16,16 @@ public class Book {
 	private String status;
 	private String imgUrl;
 	private String name;
+	private double averageRating;
 	
+	public double getAverageRating() {
+		return averageRating;
+	}
+
+	public void setAverageRating(double averageRating) {
+		this.averageRating = averageRating;
+	}
+
 	public String getName() {
 		return name;
 	}
