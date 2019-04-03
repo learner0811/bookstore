@@ -26,7 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ptit.bookstore.model.Author;
-import ptit.bookstore.model.Book;
+import ptit.bookstore.model.BookInfo;
 import ptit.bookstore.model.Category;
 import ptit.bookstore.model.Publisher;
 import ptit.bookstore.service.AuthorService;
@@ -70,7 +70,7 @@ public class BookCtr {
 	}
 
 	@RequestMapping(value = "/book/add", method = RequestMethod.POST)
-	public ModelAndView doAdd(@ModelAttribute Book book, BindingResult result, @RequestParam("catList") ArrayList<Integer> listCatId,
+	public ModelAndView doAdd(@ModelAttribute BookInfo book, BindingResult result, @RequestParam("catList") ArrayList<Integer> listCatId,
 			@RequestParam("imageFile") MultipartFile multipartFile, RedirectAttributes redirect) {
 		ModelAndView mav = new ModelAndView();
 		

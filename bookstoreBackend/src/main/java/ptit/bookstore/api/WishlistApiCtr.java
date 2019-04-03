@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ptit.bookstore.model.Book;
+import ptit.bookstore.model.BookInfo;
 import ptit.bookstore.service.WishlistService;
 
 @RestController
@@ -19,10 +19,10 @@ public class WishlistApiCtr {
 	private WishlistService wishlistService;
 	
 	@RequestMapping(value = "/getWishlist", method = RequestMethod.GET)
-	public ResponseEntity<List<Book>> getWishlist(@RequestParam int userId)
+	public ResponseEntity<List<BookInfo>> getWishlist(@RequestParam int userId)
 	{
-		List<Book> result = wishlistService.getWishlist(userId);
-		return new ResponseEntity<List<Book>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
+		List<BookInfo> result = wishlistService.getWishlist(userId);
+		return new ResponseEntity<List<BookInfo>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/addToWishlist", method = RequestMethod.GET)

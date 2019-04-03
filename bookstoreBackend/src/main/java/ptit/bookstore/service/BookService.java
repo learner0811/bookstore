@@ -6,43 +6,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ptit.bookstore.dao.BookDao;
-import ptit.bookstore.model.Book;
+import ptit.bookstore.dao.BookInfoDao;
+import ptit.bookstore.model.BookInfo;
 
 @Service
 public class BookService {
 	@Autowired
-	private BookDao bookDao;
+	private BookInfoDao bookDao;
 	
-	public List<Book> searchBookByName(String bookName)
+	public List<BookInfo> searchBookByName(String bookName)
 	{
-		List<Book> result = bookDao.getBookByName(bookName);
+		List<BookInfo> result = bookDao.getBookByName(bookName);
 		return result;
 		
 	}
 	
-	public List<Book> getAllBook()
+	public List<BookInfo> getAllBook()
 	{
-		List<Book> result = bookDao.getAllBook();
+		List<BookInfo> result = bookDao.getAllBook();
 		return result;
 	}
 	
-	public Book getBookById(int id)
+	public BookInfo getBookById(int id)
 	{
-		Book result = bookDao.getBookById(id);
+		BookInfo result = bookDao.getBookById(id);
 		return result;
 	}
 	
 	@Transactional(rollbackFor = Exception.class)
-	public Book save(Book book) {
+	public BookInfo save(BookInfo book) {
 		book = bookDao.save(book);
 		bookDao.addBookCategory(book);
 		return book;
   }
   
-	public List<Book> searchBookByCategory(int categoryId)
+	public List<BookInfo> searchBookByCategory(int categoryId)
 	{
-		List<Book> result = bookDao.getBookByCategory(categoryId);
+		List<BookInfo> result = bookDao.getBookByCategory(categoryId);
 		return result;
 	}
 	

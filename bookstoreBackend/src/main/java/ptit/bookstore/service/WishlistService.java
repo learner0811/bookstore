@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ptit.bookstore.dao.BookDao;
+import ptit.bookstore.dao.BookInfoDao;
 import ptit.bookstore.dao.WishlistDao;
-import ptit.bookstore.model.Book;
+import ptit.bookstore.model.BookInfo;
 
 @Service
 public class WishlistService {
@@ -16,15 +16,15 @@ public class WishlistService {
 	private WishlistDao wishlistDao;
 	
 	@Autowired
-	private BookDao bookDao;
+	private BookInfoDao bookDao;
 	
-	public List<Book> getWishlist(int userId)
+	public List<BookInfo> getWishlist(int userId)
 	{
 		List<Integer> listBookId = wishlistDao.getWishlistByUserId(userId);
-		List<Book> result = new ArrayList<>();
+		List<BookInfo> result = new ArrayList<>();
 		for(int i : listBookId)
 		{
-			Book b = bookDao.getBookById(i);
+			BookInfo b = bookDao.getBookById(i);
 			result.add(b);
 		}
 		return result;
