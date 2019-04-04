@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -47,5 +48,75 @@ public class BookDao {
 			e.printStackTrace();
 			return -1;
 		}
+	}
+	
+	/**
+	 * This function returns an available book of bookinfo
+	 * @param bookinfoId: id of bookinfo
+	 * @return: id of one available book, -1 if none were found
+	 */
+	public int getAvailableBook(int bookinfoId)
+	{
+		String sql = "select * from book where bookinfoId = ? and status = ?";
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, bookinfoId);
+			ps.setString(2, "1");
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			if(rs.next())
+			{
+				conn.close();
+				return rs.getInt("id");
+			}
+			conn.close();
+			return -1;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	/**
+	 * This function adds a new book with bookinfo specified in id
+	 * @param bookinfoId: id of bookinfo
+	 */
+	public void addBook(int bookinfoId)
+	{
+		jdbcTemplate.update(new PreparedStatementCreator()
+		{
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				String sql = "insert into "
+						+ "book(book.status, book.bookinfoId) "
+						+ "values (?, ?)";
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setInt(1, 1);
+				ps.setInt(2, bookinfoId);
+				return ps;
+			}
+		});
+	}
+	
+	/**
+	 * This function adds a book to an order
+	 * @param bookId: id of the book to be added
+	 * @param orderId: id of the order that the book will be added in
+	 */
+	public void addToOrder(int bookId, int orderId)
+	{
+		jdbcTemplate.update(new PreparedStatementCreator()
+		{
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				String sql = "update book set status = 0, orderId = ? where id = ?";
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setInt(1, orderId);
+				ps.setInt(2, bookId);
+				return ps;
+			}
+		});
 	}
 }
