@@ -377,7 +377,6 @@ public class BookInfoDao {
 			}
 		}, holder);
 		book.setId(holder.getKey().intValue());
-				
 		return book;
 	}
 
