@@ -359,7 +359,7 @@ public class BookInfoDao {
 		jdbcTemplate.update(new PreparedStatementCreator() {
 
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-				String sql = "insert into book (authorId, publisherId, price, status, imgUrl, name, discount) values (?,?,?,?,?,?,?)";
+				String sql = "insert into bookInfo (authorId, publisherId, price, imgUrl, name, discount) values (?,?,?,?,?,?)";
 				PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 				if (book.getAuthor().getId() == 0)
 					ps.setNull(1, Types.INTEGER);
@@ -370,9 +370,9 @@ public class BookInfoDao {
 				else
 					ps.setInt(2, book.getPublisher().getId());
 				ps.setInt(3, book.getPrice());
-				ps.setString(5, book.getImgUrl());
-				ps.setString(6, book.getName());
-				ps.setInt(7, book.getDiscount());
+				ps.setString(4, book.getImgUrl());
+				ps.setString(5, book.getName());
+				ps.setInt(6, book.getDiscount());
 				return ps;
 			}
 		}, holder);
@@ -390,7 +390,7 @@ public class BookInfoDao {
 		System.out.println("number of row affect in book dao function addBookCategory " + rowAffect);
 	}
 	
-	public void addExistingBook(int bookinfoId, int quantity)
+	/*public void addExistingBook(int bookinfoId, int quantity)
 	{
 		for(int i = 0; i < quantity; i++)
 		{
@@ -408,5 +408,5 @@ public class BookInfoDao {
 				}
 			});
 		}
-	}
+	}*/
 }
