@@ -377,25 +377,6 @@ public class BookInfoDao {
 			}
 		}, holder);
 		book.setId(holder.getKey().intValue());
-		
-		//add number of book defined in quantity section
-		int quantity = book.getAvailableQuantity();
-		for(int i = 0; i < quantity; i++)
-		{
-			jdbcTemplate.update(new PreparedStatementCreator()
-			{
-				@Override
-				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-					String sql = "insert into "
-							+ "book(book.status, book.bookinfoId) "
-							+ "values (?, ?)";
-					PreparedStatement ps = con.prepareStatement(sql);
-					ps.setInt(1, 1);
-					ps.setInt(2, holder.getKey().intValue());
-					return ps;
-				}
-			});
-		}
 		return book;
 	}
 
