@@ -29,18 +29,15 @@ public class BookDao {
 	 */
 	public int getAvailableNumber(int bookinfoId)
 	{
-		String sql = "select * from book where bookinfoId = ?";
+		String sql = "select count(*) from book where bookinfoId = ? and status = '1'";
 		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookinfoId);
 			ResultSet rs = ps.executeQuery();
 			int count = 0;
-			while(rs.next())
-			{
-				if(rs.getString("status").equals("1"))
-					count++;
-			}
+			if(rs.next())
+				count = rs.getInt(1);
 			conn.close();
 			return count;
 		} catch (SQLException e) {
@@ -111,7 +108,7 @@ public class BookDao {
 		{
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-				String sql = "update book set status = 0, orderId = ? where id = ?";
+				String sql = "update book set status = 0, orderId = ? where bookinfoId = ? and status = 1 limit 1";
 				PreparedStatement ps = con.prepareStatement(sql);
 				ps.setInt(1, orderId);
 				ps.setInt(2, bookId);

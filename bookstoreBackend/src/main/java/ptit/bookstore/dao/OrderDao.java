@@ -49,9 +49,9 @@ public class OrderDao {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				// TODO Auto-generated method stub
-				String sql = "insert into order(dateCreate, clientId, shippinginfoId, status, paymentmethod) "
+				String sql = "insert into bookstore.order (dateCreate, clientId, shippinginfoId, status, paymentmethod) "
 						+ "values (?, ?, ?, ?, ?)";
-				PreparedStatement ps = con.prepareStatement(sql);
+				PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 				ps.setDate(1, order.getDateCreate());
 				ps.setInt(2, order.getClient().getId());
 				ps.setInt(3, shippinginfoId);
