@@ -33,7 +33,7 @@ public class ShippingInfoDao {
 				String sql = "insert into shippinginfo "
 						+ "(receiverName, number, district, city, zipcode)"
 						+ " values (?, ?, ?, ?, ?)";
-				PreparedStatement ps = con.prepareStatement(sql);
+				PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 				ps.setString(1, shippingInfo.getReceiverName());
 				ps.setString(2, shippingInfo.getNumber());
 				ps.setString(3, shippingInfo.getDistrict());
