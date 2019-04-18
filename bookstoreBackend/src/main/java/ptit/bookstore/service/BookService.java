@@ -6,49 +6,81 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ptit.bookstore.dao.BookDao;
 import ptit.bookstore.dao.BookInfoDao;
 import ptit.bookstore.model.BookInfo;
 
 @Service
 public class BookService {
 	@Autowired
-	private BookInfoDao bookDao;
-	
-	public List<BookInfo> searchBookByName(String bookName)
-	{
-		List<BookInfo> result = bookDao.getBookByName(bookName);
+	private BookInfoDao bookInfoDao;
+
+	@Autowired
+	private BookDao bookDao;
+
+	public List<BookInfo> searchBookByName(String bookName) {
+		List<BookInfo> result = bookInfoDao.getBookByName(bookName);
 		return result;
-		
+
 	}
-	
-	public List<BookInfo> getAllBook()
-	{
-		List<BookInfo> result = bookDao.getAllBook();
-		return result;
-	}
-	
-	public BookInfo getBookById(int id)
-	{
-		BookInfo result = bookDao.getBookById(id);
+
+	public List<BookInfo> getAllBook() {
+		List<BookInfo> result = bookInfoDao.getAllBook();
 		return result;
 	}
-	
+
+	public BookInfo getBookById(int id) {
+		BookInfo result = bookInfoDao.getBookById(id);
+		return result;
+	}
+
 	@Transactional(rollbackFor = Exception.class)
 	public BookInfo save(BookInfo book) {
-		book = bookDao.save(book);
-		bookDao.addBookCategory(book);
+		book = bookInfoDao.save(book);
+		System.out.println("book name is " + book.getName());
+		bookInfoDao.addBookCategory(book);
 		return book;
-  }
-  
-	public List<BookInfo> searchBookByCategory(int categoryId)
-	{
-		List<BookInfo> result = bookDao.getBookByCategory(categoryId);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public boolean update(BookInfo book) {
+		boolean flag = true;
+		flag = bookInfoDao.update(book);
+		flag = bookInfoDao.deleteBookCategory(book);
+		bookInfoDao.addBookCategory(book);
+		return flag;
+	}
+
+	public List<BookInfo> searchBookByCategory(int categoryId) {
+		List<BookInfo> result = bookInfoDao.getBookByCategory(categoryId);
 		return result;
 	}
-	
-	public double getUserRating(int bookId, int userId)
-	{
-		double result = bookDao.getUserRating(bookId, userId);
+
+	public double getUserRating(int bookId, int userId) {
+		double result = bookInfoDao.getUserRating(bookId, userId);
 		return result;
 	}
+
+	public void delete(int id) {
+		bookInfoDao.delete(id);
+	}
+
+	public String updateQuantity(BookInfo book, int newQuantity) {
+		int availableQuanity = book.getAvailableQuantity();
+		if (availableQuanity < newQuantity) {
+			int number = newQuantity - availableQuanity;
+			for (int i = 0; i < number; i++)
+				bookDao.addBook(book.getId());
+			return "Add more book successful";
+		} else if (availableQuanity > newQuantity) {
+			int number = availableQuanity - newQuantity;
+			for (int i = 0; i < number; i++) {
+				bookDao.deleteBook(book.getId());				
+			}
+			return "Delete boo successful";
+		}		
+		return "Available quanity equal to new quantity";
+
+	}
+
 }

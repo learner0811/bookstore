@@ -23,7 +23,7 @@ public class ShippingInfoDao {
 	@Autowired
 	private DataSource dataSource;
 	
-	public int addShippingInfo(ShippingInfo shippingInfo)
+	public int addShippingInfo(final ShippingInfo shippingInfo)
 	{
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator()

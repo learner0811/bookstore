@@ -30,7 +30,11 @@ public class RegisterService {
 	public PlatformTransactionManager transactionManager;
 	
 	@Transactional(rollbackFor = Exception.class)
-	public User register(User user) throws SQLException{						
+	public User register(User user) throws SQLException{
+		//check account
+		if(accountDao.isAccountExists(user.getAccount()))
+			return null;
+		
 		//save account				
 		Account account = accountDao.Save(user.getAccount());				
 		user.setAccount(account);

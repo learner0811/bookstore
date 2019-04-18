@@ -43,7 +43,7 @@ label {
 			<div class="container">
 				<%@include file="../common/msg.jsp" %>
 				<form:form enctype="multipart/form-data" method="post"
-					action="/bookstore/book/add" modelAttribute="book">
+					action="/bookstore/book/add" modelAttribute="book" acceptCharset="UTF-8">
 					<div class="row">
 						<div class="form-group col-md-6">
 							<label>Name</label> <input type="text" class="form-control"
@@ -87,7 +87,7 @@ label {
 						</div>
 						<div class="form-group col-md-6">
 							<label>Discount</label> <input type="text" class="form-control"
-								name="discount">
+								name="discount" value="0">
 						</div>
 					</div>					
 					<div class="row">

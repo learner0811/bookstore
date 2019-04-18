@@ -6,7 +6,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class ProcessOrderCtr {
-	@RequestMapping("/processorder/index")
+	@RequestMapping("/order/index")
 	public ModelAndView mav() {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/process_order/index");

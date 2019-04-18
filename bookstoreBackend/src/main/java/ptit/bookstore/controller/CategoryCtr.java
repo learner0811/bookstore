@@ -61,11 +61,17 @@ public class CategoryCtr {
 	ModelAndView doAdd(@ModelAttribute Category category, BindingResult bind, RedirectAttributes redirect) {		
 		ModelAndView mav = new ModelAndView();
 		if (bind.hasErrors()) {
-			mav.addObject("errorMsg", "your input is invalid format");
+			redirect.addFlashAttribute("errorMsg", "your input is invalid format");
 			mav.setViewName("redirect:/category/add");
 			return mav;
 		}
-		category = categoryService.save(category);		
+		category = categoryService.save(category);	
+		if (category == null) {
+			redirect.addFlashAttribute("errorMsg", "Category name may exist");
+			mav.setViewName("redirect:/category/add");
+			return mav;
+		}
+		redirect.addFlashAttribute("successMsg", "add success");
 		mav.setViewName("redirect:/category/index");
 		return mav;
 	}

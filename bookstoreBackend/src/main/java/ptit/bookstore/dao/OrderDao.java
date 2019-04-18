@@ -31,7 +31,7 @@ public class OrderDao {
 	@Autowired
 	private BookDao bookDao;
 	
-	public boolean addOrder(Order order)
+	public boolean addOrder(final Order order)
 	{
 		//check if there are enough books for that order
 		for(BookInfo bookinfo : order.getCart().getListBook())
@@ -41,7 +41,7 @@ public class OrderDao {
 				return false;
 		}
 		//create shipping info
-		int shippinginfoId = shippingInfoDao.addShippingInfo(order.getShippingInfo());
+		final int shippinginfoId = shippingInfoDao.addShippingInfo(order.getShippingInfo());
 		//create order
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator()

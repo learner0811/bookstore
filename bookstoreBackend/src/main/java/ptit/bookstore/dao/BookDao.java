@@ -80,7 +80,7 @@ public class BookDao {
 	 * This function adds a new book with bookinfo specified in id
 	 * @param bookinfoId: id of bookinfo
 	 */
-	public void addBook(int bookinfoId)
+	public void addBook(final int bookinfoId)
 	{
 		jdbcTemplate.update(new PreparedStatementCreator()
 		{
@@ -97,12 +97,25 @@ public class BookDao {
 		});
 	}
 	
+	public void deleteBook(final int bookInfoId) {
+		jdbcTemplate.update(new PreparedStatementCreator()
+		{
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				String sql = "delete from book where bookinfoid = ? and status = '1' limit 1";						
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setInt(1, bookInfoId);				
+				return ps;
+			}
+		});
+	}
+	
 	/**
 	 * This function adds a book to an order
 	 * @param bookId: id of the book to be added
 	 * @param orderId: id of the order that the book will be added in
 	 */
-	public void addToOrder(int bookId, int orderId)
+	public void addToOrder(final int bookId, final int orderId)
 	{
 		jdbcTemplate.update(new PreparedStatementCreator()
 		{
