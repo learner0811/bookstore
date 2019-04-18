@@ -21,35 +21,31 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BookInfoDao {
-	@Autowired 
+	@Autowired
 	private DataSource dataSource;
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+
 	@Autowired
 	private BookDao bookDao;
-	
+
 	private Connection conn;
-	
-	public List<BookInfo> getAllBook()
-	{
+
+	public List<BookInfo> getAllBook() {
 		List<BookInfo> result = new ArrayList<BookInfo>();
 		try {
-			String sql = "select * from bookinfo "
-					+ "left join author on bookinfo.authorId = author.id "
+			String sql = "select * from bookinfo " + "left join author on bookinfo.authorId = author.id "
 					+ "left join publisher on bookinfo.publisherId = publisher.id "
 					+ "left join book_category on bookinfo.id = book_category.idbook "
 					+ "left join category on book_category.idcat = category.id ";
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			while(rs.next())
-			{
+			while (rs.next()) {
 				int id = rs.getInt("bookinfo.id");
 				BookInfo b = isBookInList(id, result);
-				if(b == null)
-				{
+				if (b == null) {
 					sql = "select * from bookinfo join rating on bookinfo.id = rating.bookId "
 							+ "where bookinfo.id = ?";
 					b = new BookInfo();
@@ -77,12 +73,11 @@ public class BookInfoDao {
 					double rating = 0;
 					ResultSet temp = ps.executeQuery();
 					int count = 0;
-					while(temp.next())
-					{
+					while (temp.next()) {
 						rating += temp.getDouble("rating.numberOfStar");
 						count++;
 					}
-					if(count == 0)
+					if (count == 0)
 						rating = 0;
 					else
 						rating /= count;
@@ -90,9 +85,7 @@ public class BookInfoDao {
 					int quantity = bookDao.getAvailableNumber(id);
 					b.setAvailableQuantity(quantity);
 					result.add(b);
-				}
-				else
-				{
+				} else {
 					Category category = new Category();
 					category.setId(rs.getInt("category.id"));
 					category.setName(rs.getString("category.name"));
@@ -106,18 +99,15 @@ public class BookInfoDao {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
-	
-	public BookInfo getBookById(int id)
-	{
+
+	public BookInfo getBookById(int id) {
 		BookInfo b = null;
-		String sql = "select * from bookinfo "
-				+ "left join author on bookinfo.authorId = author.id "
+		String sql = "select * from bookinfo " + "left join author on bookinfo.authorId = author.id "
 				+ "left join publisher on bookinfo.publisherId = publisher.id "
 				+ "left join book_category on bookinfo.id = book_category.idbook "
-				+ "left join category on book_category.idcat = category.id "
-				+ "where bookinfo.id = ?";
+				+ "left join category on book_category.idcat = category.id " + "where bookinfo.id = ?";
 		PreparedStatement ps;
 		try {
 			conn = dataSource.getConnection();
@@ -125,12 +115,9 @@ public class BookInfoDao {
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			b = new BookInfo();
-			sql = "select * from bookinfo join rating on bookinfo.id = rating.bookId "
-					+ "where bookinfo.id = ?";
-			while(rs.next())
-			{
-				if(b.getId() != id)
-				{
+			sql = "select * from bookinfo join rating on bookinfo.id = rating.bookId " + "where bookinfo.id = ?";
+			while (rs.next()) {
+				if (b.getId() != id) {
 					b.setId(id);
 					b.setName(rs.getString("bookinfo.name"));
 					Author author = new Author();
@@ -155,21 +142,18 @@ public class BookInfoDao {
 					double rating = 0;
 					ResultSet temp = ps.executeQuery();
 					int count = 0;
-					while(temp.next())
-					{
+					while (temp.next()) {
 						rating += temp.getDouble("rating.numberOfStar");
 						count++;
 					}
-					if(count == 0)
+					if (count == 0)
 						rating = 0;
 					else
 						rating /= count;
 					b.setAverageRating(rating);
 					int quantity = bookDao.getAvailableNumber(id);
 					b.setAvailableQuantity(quantity);
-				}
-				else
-				{
+				} else {
 					Category category = new Category();
 					category.setId(rs.getInt("category.id"));
 					category.setName(rs.getString("category.name"));
@@ -184,29 +168,24 @@ public class BookInfoDao {
 			return null;
 		}
 	}
-	
-	public List<BookInfo> getBookByName(String bookName)
-	{
+
+	public List<BookInfo> getBookByName(String bookName) {
 		bookName = bookName.toLowerCase();
 		bookName = "%" + bookName + "%";
 		List<BookInfo> result = new ArrayList<BookInfo>();
 		try {
-			String sql = "select * from bookinfo "
-					+ "left join author on bookinfo.authorId = author.id "
+			String sql = "select * from bookinfo " + "left join author on bookinfo.authorId = author.id "
 					+ "left join publisher on bookinfo.publisherId = publisher.id "
 					+ "left join book_category on bookinfo.id = book_category.idbook "
-					+ "left join category on book_category.idcat = category.id "
-					+ "where lower(bookinfo.name) like ?";
+					+ "left join category on book_category.idcat = category.id " + "where lower(bookinfo.name) like ?";
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, bookName);
 			ResultSet rs = ps.executeQuery();
-			while(rs.next())
-			{
+			while (rs.next()) {
 				int id = rs.getInt("bookinfo.id");
 				BookInfo b = isBookInList(id, result);
-				if(b == null)
-				{
+				if (b == null) {
 					sql = "select * from bookinfo join rating on bookinfo.id = rating.bookId "
 							+ "where bookinfo.id = ?";
 					b = new BookInfo();
@@ -234,12 +213,11 @@ public class BookInfoDao {
 					double rating = 0;
 					ResultSet temp = ps.executeQuery();
 					int count = 0;
-					while(temp.next())
-					{
+					while (temp.next()) {
 						rating += temp.getDouble("rating.numberOfStar");
 						count++;
 					}
-					if(count == 0)
+					if (count == 0)
 						rating = 0;
 					else
 						rating /= count;
@@ -247,9 +225,7 @@ public class BookInfoDao {
 					int quantity = bookDao.getAvailableNumber(id);
 					b.setAvailableQuantity(quantity);
 					result.add(b);
-				}
-				else
-				{
+				} else {
 					Category category = new Category();
 					category.setId(rs.getInt("category.id"));
 					category.setName(rs.getString("category.name"));
@@ -263,43 +239,37 @@ public class BookInfoDao {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
-	
-	public List<BookInfo> getBookByCategory(int categoryId)
-	{
+
+	public List<BookInfo> getBookByCategory(int categoryId) {
 		List<BookInfo> result = new ArrayList<BookInfo>();
 		try {
-			String sql = "select * from bookinfo "
-					+ "left join book_category on bookinfo.id = book_category.idbook "
-					+ "left join category on book_category.idcat = category.id "
-					+ "where category.id = ?";
+			String sql = "select * from bookinfo " + "left join book_category on bookinfo.id = book_category.idbook "
+					+ "left join category on book_category.idcat = category.id " + "where category.id = ?";
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, categoryId);
 			ResultSet rs = ps.executeQuery();
-			while(rs.next())
-			{
+			while (rs.next()) {
 				int id = rs.getInt("bookinfo.id");
 				BookInfo b = this.getBookById(id);
 				result.add(b);
 			}
 			conn.close();
 			return result;
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
-	
-	public double getUserRating(int bookId, int userId)
-	{
+
+	public double getUserRating(int bookId, int userId) {
 		double result = 0;
-		String sql = "select * from bookinfo "
-				+ "join rating on bookinfo.id = rating.bookId "
+		String sql = "select * from bookinfo " + "join rating on bookinfo.id = rating.bookId "
 				+ "where bookinfo.id = ? and rating.userId = ?";
 		try {
 			conn = dataSource.getConnection();
@@ -307,11 +277,9 @@ public class BookInfoDao {
 			ps.setInt(1, bookId);
 			ps.setInt(2, userId);
 			ResultSet rs = ps.executeQuery();
-			if(rs.next())
-			{
+			if (rs.next()) {
 				result = rs.getDouble("rating.numberOfStar");
-			}
-			else
+			} else
 				result = 0;
 			conn.close();
 			return result;
@@ -321,38 +289,36 @@ public class BookInfoDao {
 			return -1;
 		}
 	}
-	
-	private BookInfo isBookInList(int id, List<BookInfo> listBook)
-	{
-		for(BookInfo b : listBook)
-			if(b.getId() == id)
+
+	private BookInfo isBookInList(int id, List<BookInfo> listBook) {
+		for (BookInfo b : listBook)
+			if (b.getId() == id)
 				return b;
 		return null;
 	}
-	
-//	private class BookRowMapper implements RowMapper<Book>
-//	{
-//
-//		public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-//			Book b = new Book();
-//			b.setId(rs.getInt("book.id"));
-//			Author author = new Author();
-//			author.setId(rs.getInt("book.authorId"));
-//			author.setDob(rs.getDate("author.dob"));
-//			author.setName(rs.getString("author.name"));
-//			b.setAuthor(author);
-//			Publisher publisher = new Publisher();
-//			publisher.setId(rs.getInt("book.publisherId"));
-//			publisher.setName(rs.getString("publisher.name"));
-//			b.setPrice(rs.getInt("book.price"));
-//			b.setDiscount(rs.getInt("book.discount"));
-//			b.setStatus(rs.getString("book.status"));
-//			b.setImgUrl(rs.getString("book.imgUrl"));
-//			b.setDescription(rs.getString("book.description"));
-//			return b;
-//		}
-//	}
 
+	// private class BookRowMapper implements RowMapper<Book>
+	// {
+	//
+	// public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
+	// Book b = new Book();
+	// b.setId(rs.getInt("book.id"));
+	// Author author = new Author();
+	// author.setId(rs.getInt("book.authorId"));
+	// author.setDob(rs.getDate("author.dob"));
+	// author.setName(rs.getString("author.name"));
+	// b.setAuthor(author);
+	// Publisher publisher = new Publisher();
+	// publisher.setId(rs.getInt("book.publisherId"));
+	// publisher.setName(rs.getString("publisher.name"));
+	// b.setPrice(rs.getInt("book.price"));
+	// b.setDiscount(rs.getInt("book.discount"));
+	// b.setStatus(rs.getString("book.status"));
+	// b.setImgUrl(rs.getString("book.imgUrl"));
+	// b.setDescription(rs.getString("book.description"));
+	// return b;
+	// }
+	// }
 
 	public BookInfo save(final BookInfo book) {
 		KeyHolder holder = new GeneratedKeyHolder();
@@ -363,7 +329,7 @@ public class BookInfoDao {
 				PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 				if (book.getAuthor().getId() == 0)
 					ps.setNull(1, Types.INTEGER);
-				else					
+				else
 					ps.setInt(1, book.getAuthor().getId());
 				if (book.getPublisher().getId() == 0)
 					ps.setNull(2, Types.INTEGER);
@@ -384,29 +350,80 @@ public class BookInfoDao {
 		final List<Category> listCat = book.getCategory();
 		int rowAffect = 0;
 		for (int i = 0; i < listCat.size(); i++) {
-			rowAffect += jdbcTemplate.update("insert into book_category values (?, ?)", book.getId(), listCat.get(i).getId());			
+			rowAffect += jdbcTemplate.update("insert into book_category values (?, ?)", book.getId(),
+					listCat.get(i).getId());
 		}
-				
+
 		System.out.println("number of row affect in book dao function addBookCategory " + rowAffect);
 	}
-	
-	/*public void addExistingBook(int bookinfoId, int quantity)
-	{
-		for(int i = 0; i < quantity; i++)
-		{
-			jdbcTemplate.update(new PreparedStatementCreator()
-			{
+
+	public void delete(final int id) {
+		int rowAffect = jdbcTemplate.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+				String sql = "delete from bookinfo where id = ?";
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setInt(1, id);
+				return ps;
+			}
+		});
+		System.out.println("id is " + id);
+		System.out.println("Number of row is deleted " + rowAffect);
+	}
+
+	public boolean update(final BookInfo book) {
+		try {
+			jdbcTemplate.update(new PreparedStatementCreator() {
 				@Override
-				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-					String sql = "insert into "
-							+ "book(book.status, book.bookinfoId) "
-							+ "values (?, ?)";
-					PreparedStatement ps = con.prepareStatement(sql);
-					ps.setInt(1, 1);
-					ps.setInt(2, bookinfoId);
+				public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+					String sql = "update bookinfo set authorId = ?, publisherId = ?, name = ?, price = ?, discount = ?, imgUrl = ?, description = ?"
+							+ " where id = ?";
+					PreparedStatement ps = conn.prepareStatement(sql);
+					if (book.getAuthor().getId() == 0)
+						ps.setNull(1, Types.INTEGER);
+					else
+						ps.setInt(1, book.getPublisher().getId());
+					if (book.getPublisher().getId() == 0)
+						ps.setNull(2, Types.INTEGER);
+					else
+						ps.setInt(2, book.getPublisher().getId());
+					ps.setString(3, book.getName());
+					ps.setInt(4, book.getPrice());
+					ps.setInt(5, book.getDiscount());
+					ps.setString(6, book.getImgUrl());
+					ps.setString(7, book.getDescription());
+					ps.setInt(8, book.getId());
 					return ps;
 				}
 			});
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
 		}
-	}*/
+		return true;
+	}
+
+	public boolean deleteBookCategory(BookInfo book) {
+		try {			
+			int rowAffect = 0;			
+			rowAffect += jdbcTemplate.update("delete from book_category where idbook = ?", book.getId());			
+			System.out.println("number of row affect " + rowAffect);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
+	/*
+	 * public void addExistingBook(int bookinfoId, int quantity) { for(int i = 0; i
+	 * < quantity; i++) { jdbcTemplate.update(new PreparedStatementCreator() {
+	 * 
+	 * @Override public PreparedStatement createPreparedStatement(Connection con)
+	 * throws SQLException { String sql = "insert into " +
+	 * "book(book.status, book.bookinfoId) " + "values (?, ?)"; PreparedStatement ps
+	 * = con.prepareStatement(sql); ps.setInt(1, 1); ps.setInt(2, bookinfoId);
+	 * return ps; } }); } }
+	 */
 }

@@ -21,7 +21,7 @@ public class CategoryService {
 	public Category findOne(int id) {
 		return categoryDao.findOne(id);
 	}
-	
+		
 	@Transactional(rollbackFor = Exception.class)
 	public Category update(Category category) {
 		return categoryDao.update(category);
@@ -29,9 +29,12 @@ public class CategoryService {
 	
 	@Transactional(rollbackFor = Exception.class)
 	public Category save(Category category) {
+		Category checkExist = categoryDao.findByName(category.getName());		
+		if (checkExist == null)
+			return null;
 		category = categoryDao.save(category);
 		if (category.getId() == 0)
-			return new Category();
+			return null;
 		return category;
 	}
 	

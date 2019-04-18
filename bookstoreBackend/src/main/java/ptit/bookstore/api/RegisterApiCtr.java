@@ -22,10 +22,10 @@ public class RegisterApiCtr {
 			user = registerService.register(user);	
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			user = new User();
-			return new ResponseEntity<User>(user, HttpStatus.BAD_REQUEST);
+			user = new User();			
+			return new ResponseEntity<User>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		}		
-		return new ResponseEntity<User>(user, HttpStatus.OK);
+		return new ResponseEntity<User>(user, user == null ? HttpStatus.CONFLICT : HttpStatus.OK);
 	}
 	
 }

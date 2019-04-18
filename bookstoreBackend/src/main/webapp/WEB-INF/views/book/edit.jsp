@@ -8,6 +8,21 @@
 <title>Category management</title>
 <!-- MAIN CSS -->
 <%@include file="../common/style.jsp"%>
+<link href="/bookstore/resources/chosen/chosen.css" rel="stylesheet">
+<style type="text/css">
+.row {
+	margin: 15px 0;
+}
+
+label {
+	margin-bottom: 0;
+	margin-left: 1px;
+}
+
+.chosen-container {
+	width: 100% !important;
+}
+</style>
 </head>
 <body>
 	<div class="d-flex" id="wrapper">
@@ -27,62 +42,57 @@
 				<%@include file="../common/msg.jsp"%>
 				<form:form enctype="multipart/form-data" method="post"
 					action="/bookstore/book/edit" modelAttribute="book">
-					<form:hidden path="id"/>
+					<form:hidden path="id" />
 					<div class="row">
 						<div class="form-group col-md-6">
-							<label>Name</label> <form:input type="text" class="form-control"
-								path="name"/>
+							<label>Name</label>
+							<form:input type="text" class="form-control" path="name" />
 						</div>
 						<div class="form-group col-md-6">
-							<label style="display: block">Category</label> <select
-								data-placeholder="Select category" multiple
-								class="chosen-select" tabindex="8" name="catList"
-								required="required">
+							<label style="display: block">Category</label>
+							<select class="chosen-select" required="required"
+								name="listCat" tabindex="8" 
+								data-placeholder="Select category" multiple="true">
 								<c:forEach items="${listCategory}" var="i">
-									<option value=${i.id }>${i.name}</option>
+									<c:forEach items="${listCatId}" var="ii">
+										<c:choose>
+											<c:when test="${i.id == ii}">
+												<option value="${i.id}" selected="selected">${i.name}</option>
+											</c:when>											
+										</c:choose>																				
+									</c:forEach>
+									<option value="${i.id}">${i.name}</option>									
 								</c:forEach>
-							</select>
+							<select>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="form-group col-md-6">
-							<label>Author</label> <select class="form-control"
-								name="author.id">
+							<label>Author</label>
+							<form:select class="form-control" path="author.id">
 								<option value="0">None</option>
-								<c:forEach items="${listAuthor}" var="i">
-									<option value=${i.id }>${i.name}</option>
-								</c:forEach>
-							</select>
+								<form:options items="${listAuthor}" itemLabel="name" itemValue="id"/>
+							</form:select>
 						</div>
 						<div class="form-group col-md-6">
-							<label>Publisher</label> <select class="form-control"
-								name="publisher.id">
+							<label>Publisher</label>
+							<form:select class="form-control" path="publisher.id">
 								<option value="0">None</option>
-								<c:forEach items="${listPublisher}" var="i">
-									<option value="${i.id}">${i.name}</option>
-								</c:forEach>
-							</select>
+								<form:options items="${listPublisher}" itemLabel="name" itemValue="id"/>
+							</form:select>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-6">
-							<label>Price</label> <input type="text" class="form-control"
-								name="price">
+							<label>Price</label>
+							<form:input type="text" class="form-control" path="price" />
 						</div>
 						<div class="form-group col-md-6">
-							<label>Discount</label> <input type="text" class="form-control"
-								name="discount">
+							<label>Discount</label> <form:input type="text" class="form-control"
+								path="discount"/>
 						</div>
-					</div>
-					<div class="row">
-						<div class="form-group col-md-6">
-							<label>Status</label> <select class="form-control" name="status">
-								<option value="1">Available</option>
-								<option value="0">Sold</option>
-							</select>
-						</div>
-					</div>
+					</div>					
 					<div class="row">
 						<div class="form-group col-md-6">
 							<label>Image</label>
@@ -97,8 +107,8 @@
 					<div class="row">
 						<div class="form-group col-md-12">
 							<label for="comment">Description:</label>
-							<textarea class="form-control" rows="5" id="comment"
-								name="description"></textarea>
+							<form:textarea class="form-control" rows="5" id="comment"
+								path="description"></form:textarea>
 						</div>
 					</div>
 					<div class="row">
@@ -113,6 +123,28 @@
 
 		<!-- MAIN SCRIPT -->
 		<%@include file="../common/lib.jsp"%>
+
+		<script type="text/javascript"
+			src='/bookstore/resources/chosen/chosen.jquery.js'></script>
+		<script type="text/javascript"
+			src='/bookstore/resources/chosen/chosen.proto.js'></script>
+
+		<script>
+			// Add the following code if you want the name of the file appear on select
+			$(".custom-file-input").on(
+					"change",
+					function() {
+						var fileName = $(this).val().split("\\").pop();
+						$(this).siblings(".custom-file-label").addClass(
+								"selected").html(fileName);
+					});
+			$(function() {
+				$('.chosen-select').chosen();
+				$('.chosen-select-deselect').chosen({
+					allow_single_deselect : true
+				});
+			});
+		</script>
 	</div>
 </body>
 </html>
