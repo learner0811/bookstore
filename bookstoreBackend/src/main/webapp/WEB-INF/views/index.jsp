@@ -17,10 +17,12 @@
 		<div id="page-content-wrapper">
 			<!-- Header -->
 			<%@include file="common/header.jsp"%>
-
+			
 			<!--Breadcumb  -->
-			<%@include file="common/breadcum.jsp"%>
-
+			<jsp:include page="common/breadcum.jsp">
+				<jsp:param value="${listBreadCum }" name="listBreadCum"/>
+			</jsp:include>
+						
 			<!-- main content -->
 			<div class="container">
 				

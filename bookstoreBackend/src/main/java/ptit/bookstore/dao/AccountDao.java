@@ -88,12 +88,25 @@ public class AccountDao {
 		List<Integer> result = jdbcTemplate.query(sql, new Object[] {a.getUsername()}, new RowMapper<Integer>()
 		{
 
-			@Override
 			public Integer mapRow(ResultSet arg0, int arg1) throws SQLException {
 				// TODO Auto-generated method stub
 				return 1;
 			}
 		});
 		return result.size() > 0 ? true : false;
+	}
+	
+	public boolean deleteAccountById(final int id) {
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			
+			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+				String sql = "delete from account where id = ?";
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setInt(1, id);
+				return ps;
+			}
+		});
+		
+		return true;
 	}
 }
