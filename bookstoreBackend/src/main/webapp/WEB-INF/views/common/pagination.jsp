@@ -1,4 +1,3 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <ul class="pagination">
 	<li class="page-item"><a class="page-link" href="#">Previous</a></li>
 	<li class="page-item active"><a class="page-link" href="#">1</a></li>

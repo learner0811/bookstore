@@ -10,6 +10,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -29,11 +32,14 @@ import ptit.bookstore.model.Author;
 import ptit.bookstore.model.BookInfo;
 import ptit.bookstore.model.Category;
 import ptit.bookstore.model.Publisher;
+import ptit.bookstore.model.User;
 import ptit.bookstore.service.AuthorService;
 import ptit.bookstore.service.BookService;
 import ptit.bookstore.service.CategoryService;
 import ptit.bookstore.service.PublisherService;
 import ptit.bookstore.utility.AppPram;
+import ptit.bookstore.utility.BreadcumInfo;
+import ptit.bookstore.utility.CheckSession;
 
 @Controller
 public class BookCtr {
@@ -50,11 +56,17 @@ public class BookCtr {
 	private BookService bookService;
 
 	@RequestMapping("/book/index")
-	public ModelAndView index(@RequestParam(value="page" ,required=false) Integer pageNumber) {
+	public ModelAndView index(@RequestParam(value = "page", required = false) Integer pageNumber, HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		List<BookInfo> listBook = bookService.getAllBook();
 		mav.addObject("listBook", listBook);
 		mav.setViewName("/book/index");
+
+		// check session
+		if (!CheckSession.checkUserSession(session))
+			return new ModelAndView("redirect:/admin_login");
+		User user = (User) session.getAttribute("user");
+		mav.addObject("user", user);
 
 		int totalPage = (int) (listBook.size() % 5 == 0 ? listBook.size() / AppPram.RECORD_PER_ROW
 				: Math.ceil((double) listBook.size() / AppPram.RECORD_PER_ROW));
@@ -70,6 +82,17 @@ public class BookCtr {
 			mav.addObject("endIndex", 4);
 			mav.addObject("totalPage", totalPage);
 		}
+
+		// breadcum
+		List<BreadcumInfo> listBreadCum = new ArrayList<BreadcumInfo>();
+		BreadcumInfo homepage = new BreadcumInfo("Home", "/bookstore/index", false);
+		BreadcumInfo book = new BreadcumInfo("Book", "/bookstore/book/index", false);
+		BreadcumInfo current = new BreadcumInfo("index", "#", true);
+		listBreadCum.add(homepage);
+		listBreadCum.add(book);
+		listBreadCum.add(current);
+		mav.addObject("listBreadCum", listBreadCum);
+
 		return mav;
 	}
 
@@ -83,6 +106,17 @@ public class BookCtr {
 		mav.addObject("listPublisher", listPublisher);
 		mav.addObject("listCategory", listCategory);
 		mav.addObject("listAuthor", listAuthor);
+
+		// breadcum
+		List<BreadcumInfo> listBreadCum = new ArrayList<BreadcumInfo>();
+		BreadcumInfo homepage = new BreadcumInfo("Home", "/bookstore/index", false);
+		BreadcumInfo book = new BreadcumInfo("Book", "/bookstore/book/index", false);
+		BreadcumInfo current = new BreadcumInfo("Add", "#", true);
+		listBreadCum.add(homepage);
+		listBreadCum.add(book);
+		listBreadCum.add(current);
+		mav.addObject("listBreadCum", listBreadCum);
+
 		return mav;
 	}
 
@@ -124,41 +158,48 @@ public class BookCtr {
 		mav.setViewName("redirect:/book/index");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/book/edit/{id}")
 	public ModelAndView edit(@PathVariable int id, RedirectAttributes redirect) {
 		ModelAndView mav = new ModelAndView();
-		
+
 		List<Publisher> listPublisher = publisherService.findAll();
 		List<Category> listCategory = categoryService.findAll();
 		List<Author> listAuthor = authorService.findAll();
 		mav.addObject("listPublisher", listPublisher);
 		mav.addObject("listCategory", listCategory);
 		mav.addObject("listAuthor", listAuthor);
-		
+
 		BookInfo book = bookService.getBookById(id);
-		ArrayList<Integer> listCatId = new ArrayList<>();
+		ArrayList<Integer> listCatId = new ArrayList<Integer>();
 		List<Category> listCat = book.getCategory();
-		for (int i =0; i < listCat.size(); i++)
+		for (int i = 0; i < listCat.size(); i++)
 			listCatId.add(listCat.get(i).getId());
-		/*String path = AppPram.uploadDir + book.getImgUrl(); 
-		//MultipartFile mul
-		try {
-			
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}*/
+		/*
+		 * String path = AppPram.uploadDir + book.getImgUrl(); //MultipartFile mul try {
+		 * 
+		 * } catch (Exception ex) { ex.printStackTrace(); }
+		 */
 		mav.addObject("book", book);
 		mav.addObject("listCatId", listCatId);
-		mav.setViewName("/book/edit");		
+		mav.setViewName("/book/edit");
+
+		// breadcum
+		List<BreadcumInfo> listBreadCum = new ArrayList<BreadcumInfo>();
+		BreadcumInfo homepage = new BreadcumInfo("Home", "/bookstore/index", false);
+		BreadcumInfo bookPage = new BreadcumInfo("Book", "/bookstore/book/index", false);
+		BreadcumInfo current = new BreadcumInfo("Edit", "#", true);
+		listBreadCum.add(homepage);
+		listBreadCum.add(bookPage);
+		listBreadCum.add(current);
+		mav.addObject("listBreadCum", listBreadCum);
+
 		return mav;
 	}
-	
-	
+
 	@RequestMapping(value = "/book/edit", method = RequestMethod.POST)
-	public ModelAndView doEdit(@ModelAttribute BookInfo book, BindingResult result, 
-			@RequestParam("listCat") List<Integer> listCatId, 
-			@RequestParam("imageFile")MultipartFile multipartFile,
+	public ModelAndView doEdit(@ModelAttribute BookInfo book, BindingResult result,
+			@RequestParam("listCat") List<Integer> listCatId, @RequestParam("imageFile") MultipartFile multipartFile,
 			RedirectAttributes redirect) {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("redirect:/book/index");
@@ -172,7 +213,7 @@ public class BookCtr {
 			listCategory.add(temp);
 		}
 		book.setCategory(listCategory);
-		
+
 		String fileName = multipartFile.getOriginalFilename();
 		book.setImgUrl(fileName);
 		if (multipartFile.getOriginalFilename().equals("") || multipartFile.getSize() == 0) {
@@ -187,19 +228,19 @@ public class BookCtr {
 			redirect.addFlashAttribute("errorMsg", "Upload fail, please try again");
 			return new ModelAndView("redirect:/book/add");
 		}
-		
-		//update book
+
+		// update book
 		boolean flag = bookService.update(book);
 		if (flag == true) {
-			redirect.addFlashAttribute("successMsg", "update success");			
-		}else {
+			redirect.addFlashAttribute("successMsg", "update success");
+		} else {
 			redirect.addFlashAttribute("erroMsg", "update success");
 		}
-		
+
 		return mav;
 	}
-	
-	@RequestMapping(value ="/book/delete/{id}")
+
+	@RequestMapping(value = "/book/delete/{id}")
 	public ModelAndView delete(@PathVariable int id, RedirectAttributes redirect) {
 		ModelAndView mav = new ModelAndView();
 		bookService.delete(id);
@@ -207,9 +248,9 @@ public class BookCtr {
 		mav.setViewName("redirect:/book/index");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/book/updateQuantity")
-	public ModelAndView updateQuantity(@RequestParam int id, @RequestParam int quantity,RedirectAttributes redirect) {
+	public ModelAndView updateQuantity(@RequestParam int id, @RequestParam int quantity, RedirectAttributes redirect) {
 		ModelAndView mav = new ModelAndView();
 		System.out.println("id " + id);
 		System.out.println("quantity " + quantity);
@@ -219,7 +260,7 @@ public class BookCtr {
 		mav.setViewName("redirect:/book/index");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/book/image", produces = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE })
 	public @ResponseBody byte[] getImage(@RequestParam String fileName) throws IOException {
 		File file = new File(AppPram.uploadDir + File.separator + fileName);

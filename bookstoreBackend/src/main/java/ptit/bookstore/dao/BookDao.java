@@ -84,7 +84,6 @@ public class BookDao {
 	{
 		jdbcTemplate.update(new PreparedStatementCreator()
 		{
-			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				String sql = "insert into "
 						+ "book(book.status, book.bookinfoId) "
@@ -100,7 +99,6 @@ public class BookDao {
 	public void deleteBook(final int bookInfoId) {
 		jdbcTemplate.update(new PreparedStatementCreator()
 		{
-			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				String sql = "delete from book where bookinfoid = ? and status = '1' limit 1";						
 				PreparedStatement ps = con.prepareStatement(sql);
@@ -119,7 +117,6 @@ public class BookDao {
 	{
 		jdbcTemplate.update(new PreparedStatementCreator()
 		{
-			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				String sql = "update book set status = 0, orderId = ? where bookinfoId = ? and status = 1 limit 1";
 				PreparedStatement ps = con.prepareStatement(sql);

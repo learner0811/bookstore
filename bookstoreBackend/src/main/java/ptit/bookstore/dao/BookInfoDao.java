@@ -359,7 +359,6 @@ public class BookInfoDao {
 
 	public void delete(final int id) {
 		int rowAffect = jdbcTemplate.update(new PreparedStatementCreator() {
-			@Override
 			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
 				String sql = "delete from bookinfo where id = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
@@ -374,7 +373,6 @@ public class BookInfoDao {
 	public boolean update(final BookInfo book) {
 		try {
 			jdbcTemplate.update(new PreparedStatementCreator() {
-				@Override
 				public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
 					String sql = "update bookinfo set authorId = ?, publisherId = ?, name = ?, price = ?, discount = ?, imgUrl = ?, description = ?"
 							+ " where id = ?";

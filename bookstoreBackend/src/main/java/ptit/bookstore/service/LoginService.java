@@ -28,4 +28,16 @@ public class LoginService {
 		user.setAddress(address);
 		return user;
 	}
+	
+	public User adminDoLogin(Account account) {		
+		account = accountDao.findOne(account);
+		User user = userDao.findUserByAccount(account);	
+		Address address = addressDao.findOne(user.getAddress().getId());
+		user.setAddress(address);
+		if (user.getId() == 0)
+			user = null;
+		else if (!user.getRole().equalsIgnoreCase("staff"))
+			user = null;
+		return user;
+	}
 }

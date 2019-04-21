@@ -28,7 +28,6 @@ public class ShippingInfoDao {
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator()
 		{
-			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				String sql = "insert into shippinginfo "
 						+ "(receiverName, number, district, city, zipcode)"

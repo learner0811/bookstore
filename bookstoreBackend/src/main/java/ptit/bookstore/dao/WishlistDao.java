@@ -32,7 +32,6 @@ public class WishlistDao {
 	private class WishlistMapper implements RowMapper<Integer>
 	{
 
-		@Override
 		public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
 			return rs.getInt("bookId");
 		}

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -42,6 +43,7 @@ public class UserDao {
 			while (rs.next()) {
 				user.setId(rs.getInt("idClient"));
 				user.setAccount(account);
+				user.setName(rs.getString("name"));
 				user.setEmail(rs.getString("email"));
 				user.setRole(rs.getString("role"));
 				address.setId(rs.getInt("idAddress"));
@@ -79,6 +81,5 @@ public class UserDao {
 		autoGreneratedId = holder.getKey().intValue();		
 		user.setId(autoGreneratedId);
 		return user;
-	}	
-
+	}		
 }

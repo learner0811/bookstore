@@ -21,7 +21,7 @@ public class WishlistService {
 	public List<BookInfo> getWishlist(int userId)
 	{
 		List<Integer> listBookId = wishlistDao.getWishlistByUserId(userId);
-		List<BookInfo> result = new ArrayList<>();
+		List<BookInfo> result = new ArrayList<BookInfo>();
 		for(int i : listBookId)
 		{
 			BookInfo b = bookDao.getBookById(i);
