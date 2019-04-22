@@ -35,4 +35,9 @@ public class WishlistService {
 		int result = wishlistDao.addToWishlist(userId, bookId);
 		return result > 0 ? true : false;
 	}
+
+	public boolean removeFromWishlist(int userId, int bookId) {
+		int result = wishlistDao.removeFromWishlist(userId, bookId);
+		return result > 0 ? true : false;
+	}
 }

@@ -36,4 +36,10 @@ public class WishlistDao {
 			return rs.getInt("bookId");
 		}
 	}
+
+	public int removeFromWishlist(int userId, int bookId) {
+		String sql = "delete from wishlist where clientId = ? and bookId = ?";
+		int result = jdbcTemplate.update(sql, new Object[] {userId, bookId});
+		return result;
+	}
 }
