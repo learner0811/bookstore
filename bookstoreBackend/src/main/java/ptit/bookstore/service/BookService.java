@@ -83,4 +83,14 @@ public class BookService {
 
 	}
 
+	public List<BookInfo> searchBookByPublisher(int publisherId) {
+		List<BookInfo> result = bookInfoDao.getBookByPublisher(publisherId);
+		return result;
+	}
+
+	public List<BookInfo> getRecentBook(int number) {
+		List<BookInfo> result = bookInfoDao.getRecentBook(number);
+		return result;
+	}
+
 }

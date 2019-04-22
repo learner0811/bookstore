@@ -85,15 +85,8 @@ public class AccountDao {
 	public boolean isAccountExists(Account a)
 	{
 		String sql = "select count(*) from account where username = ?";
-		List<Integer> result = jdbcTemplate.query(sql, new Object[] {a.getUsername()}, new RowMapper<Integer>()
-		{
-
-			public Integer mapRow(ResultSet arg0, int arg1) throws SQLException {
-				// TODO Auto-generated method stub
-				return 1;
-			}
-		});
-		return result.size() > 0 ? true : false;
+		int res = jdbcTemplate.queryForInt(sql, new Object[] {a.getUsername()});
+		return res > 0 ? true : false;
 	}
 	
 	public boolean deleteAccountById(final int id) {

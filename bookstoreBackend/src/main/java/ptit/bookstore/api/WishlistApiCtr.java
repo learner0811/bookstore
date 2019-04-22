@@ -31,4 +31,11 @@ public class WishlistApiCtr {
 		Boolean result = wishlistService.addToWishlist(userId, bookId);
 		return new ResponseEntity<Boolean>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/removeFromWishlist", method = RequestMethod.GET)
+	public ResponseEntity<Boolean> removeFromWishlist(@RequestParam int userId, @RequestParam int bookId)
+	{
+		Boolean result = wishlistService.removeFromWishlist(userId, bookId);
+		return new ResponseEntity<Boolean>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
+	}
 }

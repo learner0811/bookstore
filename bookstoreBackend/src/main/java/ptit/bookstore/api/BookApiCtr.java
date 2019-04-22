@@ -63,4 +63,18 @@ public class BookApiCtr {
 		return new ResponseEntity<Double>(result, result == -1 ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping(value = "/searchBookByPublisher", method = RequestMethod.GET)
+	public ResponseEntity<List<BookInfo>> searchBookByPublisher(@RequestParam int publisherId)
+	{
+		List<BookInfo> result = bookService.searchBookByPublisher(publisherId);
+		return new ResponseEntity<List<BookInfo>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getRecentBook", method = RequestMethod.GET)
+	public ResponseEntity<List<BookInfo>> getRecentBook(@RequestParam int number)
+	{
+		List<BookInfo> result = bookService.getRecentBook(number);
+		return new ResponseEntity<List<BookInfo>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
+	}
 }

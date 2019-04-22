@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -414,6 +416,40 @@ public class BookInfoDao {
 		return true;
 	}
 
+	public List<BookInfo> getBookByPublisher(int publisherId) {
+		List<BookInfo> result = new ArrayList<BookInfo>();
+		try {
+			String sql = "select * from bookinfo where publisherId = ?";
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, publisherId);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				int id = rs.getInt("bookinfo.id");
+				BookInfo b = this.getBookById(id);
+				result.add(b);
+			}
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<BookInfo> getRecentBook(int number) {
+		List<BookInfo> listAll = this.getAllBook();
+		int size = listAll.size();
+		if(number > size)
+			number = size;
+		Collections.sort(listAll, new BookCompare());
+		for(int i = 0; i < size - number; i++)
+			listAll.remove(0);
+		return listAll;
+	}
+
 	/*
 	 * public void addExistingBook(int bookinfoId, int quantity) { for(int i = 0; i
 	 * < quantity; i++) { jdbcTemplate.update(new PreparedStatementCreator() {
@@ -424,4 +460,13 @@ public class BookInfoDao {
 	 * = con.prepareStatement(sql); ps.setInt(1, 1); ps.setInt(2, bookinfoId);
 	 * return ps; } }); } }
 	 */
+	
+	//comparing books by id
+	class BookCompare implements Comparator<BookInfo>
+	{
+		@Override
+		public int compare(BookInfo arg0, BookInfo arg1) {
+			return arg0.getId() - arg1.getId();
+		}
+	}
 }
