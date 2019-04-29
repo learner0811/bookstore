@@ -450,6 +450,17 @@ public class BookInfoDao {
 		return listAll;
 	}
 	
+	public List<BookInfo> getDiscountBook(int number) {
+		List<BookInfo> listAll = this.getAllBook();
+		int size = listAll.size();
+		if(number > size)
+			number = size;
+		Collections.sort(listAll, new DiscountCompare());
+		for(int i = 0; i < size - number; i++)
+			listAll.remove(0);
+		return listAll;
+	}
+	
 	public List<BookInfo> getBookByOrder(int orderId)
 	{
 		List<BookInfo> result = new ArrayList<>();
@@ -507,6 +518,15 @@ public class BookInfoDao {
 		@Override
 		public int compare(BookInfo arg0, BookInfo arg1) {
 			return arg0.getId() - arg1.getId();
+		}
+	}
+	
+	//comparing books by discount
+	class DiscountCompare implements Comparator<BookInfo>
+	{
+		@Override
+		public int compare(BookInfo arg0, BookInfo arg1) {
+			return arg0.getDiscount() - arg1.getDiscount();
 		}
 	}
 }
