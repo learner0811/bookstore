@@ -17,7 +17,16 @@ public class BookInfo {
 	private String name;
 	private double averageRating;
 	private int availableQuantity;
+	private int quantity;
 	
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
 	public int getAvailableQuantity() {
 		return availableQuantity;
 	}

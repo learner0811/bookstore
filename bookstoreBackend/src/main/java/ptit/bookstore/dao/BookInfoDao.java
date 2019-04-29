@@ -449,6 +449,46 @@ public class BookInfoDao {
 			listAll.remove(0);
 		return listAll;
 	}
+	
+	public List<BookInfo> getBookByOrder(int orderId)
+	{
+		List<BookInfo> result = new ArrayList<>();
+		String sql = "SELECT * FROM book a inner join bookinfo b on a.bookinfoid = b.id where a.orderid = ?";
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, orderId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				int infoId = rs.getInt("b.id");
+				BookInfo info = isBookInList(infoId, result);
+				if(info == null)
+				{
+					info = this.getBookById(infoId);
+					info.setQuantity(1);
+					result.add(info);
+				}
+				else
+				{
+					info.setQuantity(info.getQuantity()+1);
+					continue;
+				}
+			}
+			conn.close();
+			return result;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			try {
+				conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	/*
 	 * public void addExistingBook(int bookinfoId, int quantity) { for(int i = 0; i

@@ -39,4 +39,9 @@ public class OrderService {
 	public boolean ChangeStatus(int orderId) {
 		return orderDao.changeStatus(orderId);
 	}
+
+	public List<Order> getOrderByUserId(int userId) {
+		List<Order> result = orderDao.getOrderByUserId(userId);
+		return result;
+	}
 }
