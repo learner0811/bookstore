@@ -28,6 +28,7 @@ public class WishlistApiCtr {
 	@RequestMapping(value = "/addToWishlist", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> addToWishlist(@RequestParam int userId, @RequestParam int bookId)
 	{
+		System.out.println(userId + " " + bookId);
 		Boolean result = wishlistService.addToWishlist(userId, bookId);
 		return new ResponseEntity<Boolean>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
 	}
