@@ -2,7 +2,9 @@ package ptit.bookstore.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -17,7 +19,11 @@ import org.springframework.stereotype.Repository;
 
 import ptit.bookstore.model.Book;
 import ptit.bookstore.model.BookInfo;
+import ptit.bookstore.model.Cart;
+import ptit.bookstore.model.Client;
 import ptit.bookstore.model.Order;
+import ptit.bookstore.model.ShippingInfo;
+import ptit.bookstore.model.User;
 import ptit.bookstore.utility.BookOrderMapper;
 import ptit.bookstore.utility.OrderRowMapper;
 
@@ -35,13 +41,21 @@ public class OrderDao {
 	@Autowired
 	private BookDao bookDao;
 	
+	@Autowired
+	private BookInfoDao bookinfoDao;
+	
+	@Autowired
+	private UserDao userDao;
+	
+	private Connection conn;
+	
 	public boolean addOrder(final Order order)
 	{
 		//check if there are enough books for that order
 		for(BookInfo bookinfo : order.getCart().getListBook())
 		{
 			//request more book that currently have
-			if(bookinfo.getAvailableQuantity() > bookDao.getAvailableNumber(bookinfo.getId()))
+			if(bookinfo.getQuantity() > bookDao.getAvailableNumber(bookinfo.getId()))
 				return false;
 		}
 		//create shipping info
@@ -108,12 +122,68 @@ public class OrderDao {
 				String sql = "update bookstore.order"
 						+ " set status = case "
 						+ "when status = 'In Progress' then 'Done' "
-						+ "when status = 'Done' then 'In Progress' end where id = 6;";						
-				PreparedStatement ps = conn.prepareStatement(sql);
+						+ "when status = 'Done' then 'In Progress' end where id = ?;";						
+				PreparedStatement ps = conn.prepareStatement(sql, orderId);
 				return ps;
 			}
 		});		
 		return true;
 		
+	}
+
+	public List<Order> getOrderByUserId(int userId) {
+		List<Order> result = new ArrayList<Order>();
+		String sql = "select * from bookstore.`order` "
+				+ "left join shippinginfo "
+				+ "on `order`.shippinginfoId = shippinginfo.id "
+				+ "where bookstore.`order`.clientId = ?";
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, userId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				Order o = new Order();
+				o.setDateCreate(rs.getDate("dateCreate"));
+				o.setId(rs.getInt("order.id"));
+				o.setPaymentMethod(rs.getString("paymentmethod"));
+				o.setStatus(rs.getString("status"));
+				
+				ShippingInfo info = new ShippingInfo();
+				info.setId(rs.getInt("shippinginfo.id"));
+				info.setCity(rs.getString("shippinginfo.city"));
+				info.setDistrict("shippinginfo.district");
+				info.setNumber(rs.getString("shippinginfo.number"));
+				info.setReceiverName(rs.getString("shippinginfo.number"));
+				info.setZipcode(rs.getString("shippinginfo.zipcode"));
+				o.setShippingInfo(info);
+				
+				int clientId = rs.getInt("order.clientId");
+				User user = userDao.getUserById(clientId);
+				Client client = new Client();
+				client.setAccount(user.getAccount());
+				client.setAddress(user.getAddress());
+				client.setEmail(user.getEmail());
+				client.setId(user.getId());
+				client.setName(user.getName());
+				client.setRole(user.getRole());
+				client.setWishList(null);
+				o.setClient(client);
+				
+				Cart cart = new Cart();
+				List<BookInfo> listBook = bookinfoDao.getBookByOrder(o.getId());
+				cart.setListBook(listBook);
+				o.setCart(cart);
+				
+				result.add(o);
+			}
+			conn.close();
+			return result;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

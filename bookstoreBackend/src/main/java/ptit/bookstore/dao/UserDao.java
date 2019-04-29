@@ -82,4 +82,48 @@ public class UserDao {
 		user.setId(autoGreneratedId);
 		return user;
 	}		
+	
+	public User getUserById(int userId) {
+		PreparedStatement ps = null;
+		User user = new User();
+		Address address = new Address();
+		user.setAddress(address);
+		Connection connection = null;
+		try {
+			connection = dataSource.getConnection();
+			String sql = "select * from user left join address on user.idAddress = address.id where idClient = ?";
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, userId);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				user.setId(rs.getInt("idClient"));
+				user.setName(rs.getString("name"));
+				user.setEmail(rs.getString("email"));
+				user.setRole(rs.getString("role"));
+				Account a = new Account();
+				user.setAccount(a);
+				address.setCity(rs.getString("city"));
+				address.setCountry(rs.getString("country"));
+				address.setDistrict(rs.getString("district"));
+				address.setId(rs.getInt("address.id"));
+				address.setNumber(rs.getString("number"));
+			}
+			connection.close();
+		} catch (SQLException ex) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ex.printStackTrace();
+		} finally {
+			try {
+				ps.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return user;
+	}
 }
