@@ -77,4 +77,11 @@ public class BookApiCtr {
 		List<BookInfo> result = bookService.getRecentBook(number);
 		return new ResponseEntity<List<BookInfo>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/getDiscountBook", method = RequestMethod.GET)
+	public ResponseEntity<List<BookInfo>> getDiscountBook(@RequestParam int number)
+	{
+		List<BookInfo> result = bookService.getDiscountBook(number);
+		return new ResponseEntity<List<BookInfo>>(result, result == null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK);
+	}
 }

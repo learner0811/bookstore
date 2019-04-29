@@ -93,4 +93,9 @@ public class BookService {
 		return result;
 	}
 
+	public List<BookInfo> getDiscountBook(int number) {
+		List<BookInfo> result = bookInfoDao.getDiscountBook(number);
+		return result;
+	}
+
 }
