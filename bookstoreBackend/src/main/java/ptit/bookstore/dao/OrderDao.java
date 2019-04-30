@@ -115,7 +115,7 @@ public class OrderDao {
 		return listBook;
 	}
 
-	public boolean changeStatus(int orderId) {
+	public boolean changeStatus(final int orderId) {
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			
 			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
