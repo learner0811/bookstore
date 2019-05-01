@@ -116,6 +116,7 @@ public class OrderDao {
 	}
 
 	public boolean changeStatus(final int orderId) {
+		System.out.println("orderid = " + orderId);
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			
 			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
@@ -123,7 +124,8 @@ public class OrderDao {
 						+ " set status = case "
 						+ "when status = 'In Progress' then 'Done' "
 						+ "when status = 'Done' then 'In Progress' end where id = ?;";						
-				PreparedStatement ps = conn.prepareStatement(sql, orderId);
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setInt(1, orderId);
 				return ps;
 			}
 		});		
