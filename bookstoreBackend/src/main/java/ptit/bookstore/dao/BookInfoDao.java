@@ -458,12 +458,13 @@ public class BookInfoDao {
 		Collections.sort(listAll, new DiscountCompare());
 		for(int i = 0; i < size - number; i++)
 			listAll.remove(0);
+		List<BookInfo> temp = new ArrayList<>();
 		for(BookInfo book : listAll)
 		{
-			if(book.getDiscount() == 0)
-				listAll.remove(book);
+			if(book.getDiscount() != 0)
+				temp.add(book);
 		}
-		return listAll;
+		return temp;
 	}
 	
 	public List<BookInfo> getBookByOrder(int orderId)
