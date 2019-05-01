@@ -152,8 +152,7 @@
 		//triggered when modal is about to be shown			
 		$('.btn-modal').each(function(index) {
 			this.addEventListener("click", function(e) {
-				var idOrder = $(this).data("order-id");
-
+				var idOrder = $(this).data("order-id");				
 				$("#orderIdChange").val(idOrder);
 				
 				$.ajax({
@@ -177,13 +176,11 @@
 			}, false);
 		});
 
-		function orderCallBack(data, idOrder) {
-			//console.log("id order " + idOrder);
-			var order = data.find(function(idOrder) {
-				return id = idOrder;
+		function orderCallBack(data, idOrder) {			
+			var order = data.find(function(o) {				
+				return o.id == idOrder;
 			});
-			//console.log(order);
-
+			//console.log(order);			
 			//get info from object
 			var customerNumber = order.client.id;
 			var customerName = order.client.name;
