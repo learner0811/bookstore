@@ -80,7 +80,7 @@ public class OrderDao {
 		//add those books to order
 		for(BookInfo bookinfo : order.getCart().getListBook())
 		{
-			for(int i = 0; i < bookinfo.getAvailableQuantity(); i++)
+			for(int i = 0; i < bookinfo.getQuantity(); i++)
 			{
 				bookDao.addToOrder(bookinfo.getId(), holder.getKey().intValue());
 			}
