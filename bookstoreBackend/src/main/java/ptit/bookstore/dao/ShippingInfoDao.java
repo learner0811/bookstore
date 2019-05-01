@@ -30,14 +30,15 @@ public class ShippingInfoDao {
 		{
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				String sql = "insert into shippinginfo "
-						+ "(receiverName, number, district, city, zipcode)"
-						+ " values (?, ?, ?, ?, ?)";
+						+ "(receiverName, number, district, city, zipcode, phonenumber)"
+						+ " values (?, ?, ?, ?, ?, ?)";
 				PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 				ps.setString(1, shippingInfo.getReceiverName());
 				ps.setString(2, shippingInfo.getNumber());
 				ps.setString(3, shippingInfo.getDistrict());
 				ps.setString(4, shippingInfo.getCity());
 				ps.setString(5, shippingInfo.getZipcode());
+				ps.setString(5, shippingInfo.getPhonenumber());
 				return ps;
 			}
 		}, holder);
