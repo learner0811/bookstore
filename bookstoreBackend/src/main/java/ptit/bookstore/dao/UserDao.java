@@ -114,6 +114,8 @@ public class UserDao {
 				address.setId(rs.getInt("address.id"));
 				address.setNumber(rs.getString("number"));
 			}
+			ps.close();
+			rs.close();
 			connection.close();
 			return user;
 		} catch (SQLException ex) {

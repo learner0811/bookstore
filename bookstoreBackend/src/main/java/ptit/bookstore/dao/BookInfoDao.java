@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 import ptit.bookstore.model.*;
+import ptit.bookstore.utility.BookInfoMapper;
+import ptit.bookstore.utility.CategoryMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -87,6 +89,7 @@ public class BookInfoDao {
 					int quantity = bookDao.getAvailableNumber(id);
 					b.setAvailableQuantity(quantity);
 					result.add(b);
+					temp.close();
 				} else {
 					Category category = new Category();
 					category.setId(rs.getInt("category.id"));
@@ -94,6 +97,7 @@ public class BookInfoDao {
 					b.addCategory(category);
 				}
 			}
+			ps.close();
 			conn.close();
 			return result;
 		} catch (SQLException e) {
@@ -103,8 +107,38 @@ public class BookInfoDao {
 		}
 
 	}
+	
+	public double getRating(final int id)
+	{
+		List<Double> result = jdbcTemplate.query(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection arg0) throws SQLException {
+				String sql = "select * from bookinfo join rating on bookinfo.id = rating.bookId " + "where bookinfo.id = ?";
+				PreparedStatement ps = arg0.prepareStatement(sql);
+				ps.setInt(1, id);
+				return ps;
+			}
+		}, new RatingMapper());
+		if(result.size() == 0)
+			return 0;
+		double sum = 0;
+		for(Double d : result)
+			sum += d;
+		sum /= result.size();
+		return sum;
+	}
+	
+	private class RatingMapper implements RowMapper<Double>
+	{
+		@Override
+		public Double mapRow(ResultSet arg0, int arg1) throws SQLException {
+			// TODO Auto-generated method stub
+			Double d = arg0.getDouble("numberOfStar");
+			return d;
+		}
+	}
 
-	public BookInfo getBookById(int id) {
+	/*public BookInfo getBookById(int id) {
 		BookInfo b = null;
 		String sql = "select * from bookinfo " + "left join author on bookinfo.authorId = author.id "
 				+ "left join publisher on bookinfo.publisherId = publisher.id "
@@ -117,7 +151,6 @@ public class BookInfoDao {
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			b = new BookInfo();
-			sql = "select * from bookinfo join rating on bookinfo.id = rating.bookId " + "where bookinfo.id = ?";
 			while (rs.next()) {
 				if (b.getId() != id) {
 					b.setId(id);
@@ -141,18 +174,11 @@ public class BookInfoDao {
 					b.addCategory(category);
 					ps = conn.prepareStatement(sql);
 					ps.setInt(1, id);
-					double rating = 0;
-					ResultSet temp = ps.executeQuery();
-					int count = 0;
-					while (temp.next()) {
-						rating += temp.getDouble("rating.numberOfStar");
-						count++;
-					}
-					if (count == 0)
-						rating = 0;
-					else
-						rating /= count;
+					
+					//set rating
+					double rating = this.getRating(id);
 					b.setAverageRating(rating);
+					
 					int quantity = bookDao.getAvailableNumber(id);
 					b.setAvailableQuantity(quantity);
 				} else {
@@ -169,6 +195,49 @@ public class BookInfoDao {
 			e.printStackTrace();
 			return null;
 		}
+	}*/
+	
+	public BookInfo getBookById(final int id)
+	{
+		
+		List<BookInfo> listBook = jdbcTemplate.query(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection arg0) throws SQLException {
+				String sql = "select * from bookinfo " + "left join author on bookinfo.authorId = author.id "
+						+ "left join publisher on bookinfo.publisherId = publisher.id " + "where bookinfo.id = ?";
+				PreparedStatement ps = arg0.prepareStatement(sql);
+				ps.setInt(1, id);
+				return ps;
+			}
+		}, new BookInfoMapper());
+		BookInfo b = listBook.get(0);
+		if(b == null)
+			return null;
+		b.setId(id);
+		List<Category> listCategory = getBookCategory(id);
+		for(Category c : listCategory)
+			b.addCategory(c);
+		double rating = this.getRating(id);
+		b.setAverageRating(rating);
+		int quantity = bookDao.getAvailableNumber(id);
+		b.setAvailableQuantity(quantity);
+		return b;
+	}
+
+	private List<Category> getBookCategory(final int id) {
+		List<Category> result = jdbcTemplate.query(new PreparedStatementCreator() {
+			
+			@Override
+			public PreparedStatement createPreparedStatement(Connection arg0) throws SQLException {
+				String sql = "select * from bookinfo "
+						+ "left join book_category on bookinfo.id = book_category.idbook "
+						+ "left join category on book_category.idcat = category.id " + "where bookinfo.id = ?";
+				PreparedStatement ps = arg0.prepareStatement(sql);
+				ps.setInt(1, id);
+				return ps;
+			}
+		}, new CategoryMapper());
+		return result;
 	}
 
 	public List<BookInfo> getBookByName(String bookName) {
@@ -483,6 +552,7 @@ public class BookInfoDao {
 				if(info == null)
 				{
 					info = this.getBookById(infoId);
+					System.out.println("book retrieved by id");
 					info.setQuantity(1);
 					result.add(info);
 				}
@@ -492,6 +562,8 @@ public class BookInfoDao {
 					continue;
 				}
 			}
+			ps.close();
+			rs.close();
 			conn.close();
 			return result;
 		} catch (SQLException e) {
