@@ -160,7 +160,7 @@ public class OrderDao {
 				info.setReceiverName(rs.getString("shippinginfo.number"));
 				info.setZipcode(rs.getString("shippinginfo.zipcode"));
 				o.setShippingInfo(info);
-				
+
 				int clientId = rs.getInt("order.clientId");
 				User user = userDao.getUserById(clientId);
 				Client client = new Client();
@@ -175,15 +175,16 @@ public class OrderDao {
 				
 				Cart cart = new Cart();
 				List<BookInfo> listBook = bookinfoDao.getBookByOrder(o.getId());
+				System.out.println("getBookByOrder");
 				cart.setListBook(listBook);
 				o.setCart(cart);
-				
 				result.add(o);
 			}
+			ps.close();
+			rs.close();
 			conn.close();
 			return result;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e) {			
 			e.printStackTrace();
 		}
 		return null;
