@@ -458,6 +458,11 @@ public class BookInfoDao {
 		Collections.sort(listAll, new DiscountCompare());
 		for(int i = 0; i < size - number; i++)
 			listAll.remove(0);
+		for(BookInfo book : listAll)
+		{
+			if(book.getDiscount() == 0)
+				listAll.remove(book);
+		}
 		return listAll;
 	}
 	
