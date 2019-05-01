@@ -38,7 +38,7 @@ public class ShippingInfoDao {
 				ps.setString(3, shippingInfo.getDistrict());
 				ps.setString(4, shippingInfo.getCity());
 				ps.setString(5, shippingInfo.getZipcode());
-				ps.setString(5, shippingInfo.getPhonenumber());
+				ps.setString(6, shippingInfo.getPhonenumber());
 				return ps;
 			}
 		}, holder);

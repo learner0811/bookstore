@@ -32,6 +32,7 @@ public class OrderRowMapper implements RowMapper<Order>{
 		shippingInfo.setDistrict(rs.getString("c.district"));
 		shippingInfo.setCity(rs.getString("c.city"));
 		shippingInfo.setZipcode(rs.getString("c.zipcode"));
+		shippingInfo.setPhonenumber(rs.getString("c.phonenumber"));
 		order.setShippingInfo(shippingInfo);
 		return order;
 	}
