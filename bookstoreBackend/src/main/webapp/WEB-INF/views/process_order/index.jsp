@@ -94,6 +94,7 @@
 											<label>Shipping number : </label><span></span><br> <label>Receiver
 												: </label><span></span> <br> <label>Address : </label><span></span><br>
 											<label>Zip code : </label><span></span><br> <label>Status
+												: </label><span></span><br><label>Phone Number
 												: </label><span></span>
 										</div>
 									</div>
@@ -180,7 +181,7 @@
 			var order = data.find(function(o) {				
 				return o.id == idOrder;
 			});
-			//console.log(order);			
+			console.log("order ", order);			
 			//get info from object
 			var customerNumber = order.client.id;
 			var customerName = order.client.name;
@@ -197,13 +198,15 @@
 					+ order.shippingInfo.district + ', '
 					+ order.shippingInfo.city;
 			var zipcode = order.shippingInfo.zipcode;
-
+			var phonenumber = order.shippingInfo.phonenumber;
 			var shipping_info = $(".shipping-info span")
+			
 			shipping_info[0].textContent = shippingNumber;
 			shipping_info[1].textContent = receiver;
 			shipping_info[2].textContent = address;
 			shipping_info[3].textContent = zipcode;
 			shipping_info[4].textContent = order.status;
+			shipping_info[5].textContent = phonenumber;			
 		};
 
 		
