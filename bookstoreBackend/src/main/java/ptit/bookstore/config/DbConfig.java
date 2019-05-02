@@ -37,11 +37,12 @@ public class DbConfig {
 	
 	@Bean
 	public DataSource dataSource() {
-		BasicDataSource dataSource = new BasicDataSource();				
+		BasicDataSource dataSource = new BasicDataSource();			
 		dataSource.setDriverClassName(driverClassName);
 		dataSource.setUrl(url);
 		dataSource.setUsername(userName);
-		dataSource.setPassword(password);		
+		dataSource.setPassword(password);	
+		
 		return dataSource;
 	}			
 	
